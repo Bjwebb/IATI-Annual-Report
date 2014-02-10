@@ -1,0 +1,11 @@
+*.swp
+*.pyc
+__pycache__
+in*
+out*
+cookies.txt
+csv
+publishers.json
+results
+aggregated*
+

@@ -1,26 +1,26 @@
 import os, json, csv
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import urllib.parse
 
 line_mapping = {
     11: '1.1',
     #13:
-    15: '1.3',
-    17: '1.4.1',
-    19: '1.4.2',
-    21: '2.1',
-    23: '2.2',
-    25: '2.3',
-    27: '2.4',
-    29: '2.5',
-    31: '3.1.1',
-    33: '3.2',
-    35: '5.1',
-    37: '5.2',
-    39: '5.3',
-    41: '6.1',
-    43: '6.2',
-    45: '6.3.1'
+    #15: '1.3',
+    15: '1.4.1',
+    17: '1.4.2',
+    19: '2.1',
+    21: '2.2',
+    23: '2.3',
+    25: '2.4',
+    27: '2.5',
+    29: '3.1.1',
+    31: '3.2',
+    33: '5.1',
+    35: '5.2',
+    37: '5.3',
+    39: '6.1',
+    41: '6.2',
+    43: '6.3.1'
 }
 
 publisher_reverse = {}
@@ -45,7 +45,12 @@ for row in reader:
 reader = csv.reader(open('csv/Alignement_with_financial_year_Budgets_4.2.csv'))
 for row in reader:
     if len(row) > 11:
-        extra_tests[row[0]]['1.4.2'] = row[11]
+        extra_tests[row[0]]['1.4.2'] = row[11].title()
+
+publisher_reverse['UK: FCO, Home Office, Work & Pensions, Energy & Climate Change, Health'] = 'uk'
+publisher_reverse['EU Enlargement and FPI'] = 'eu-ec'
+
+publishing_members = []
 
 for fname in os.listdir('in'):
     reader = csv.reader(open(os.path.join('in',fname)))
@@ -55,6 +60,7 @@ for fname in os.listdir('in'):
     name = header[0]
     if name in publisher_reverse:
         slug = publisher_reverse[name]
+        publishing_members.append((slug,name))
         publisher_tests = json.load(open('results/{0}.json'.format(slug)))['tests']
         writer = csv.writer(open(os.path.join('out',name+'.csv'), 'w'))
         for i, row in enumerate(reader):
@@ -69,3 +75,7 @@ for fname in os.listdir('in'):
             writer.writerow(row)
     else:
         print('{0} does not match'.format(name))
+        writer = csv.writer(open(os.path.join('out',name+'.csv'), 'w'))
+        for i, row in enumerate(reader):
+            writer.writerow(row)
+
