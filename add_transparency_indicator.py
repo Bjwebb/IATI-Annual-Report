@@ -41,7 +41,7 @@ for row in reader:
 reader = csv.reader(open('csv/Alignement_with_financial_year_Transactions_4.1.csv'))
 for row in reader:
     if len(row) > 24:
-        extra_tests[row[0]]['1.4.1'] = row[24]
+        extra_tests[row[0]]['1.4.1'] = row[24].replace('Quaterly', 'Quarterly')
 reader = csv.reader(open('csv/Alignement_with_financial_year_Budgets_4.2.csv'))
 for row in reader:
     if len(row) > 11:
