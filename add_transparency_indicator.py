@@ -1,5 +1,6 @@
 import os, json, csv
 from collections import defaultdict, OrderedDict
+from functools import partial
 import urllib.parse
 
 line_mapping = {
@@ -22,6 +23,8 @@ line_mapping = {
     41: '6.2',
     43: '6.3.1'
 }
+
+summary_tests = ['1.1', '1.3', '1.4.1', '1.4.2', '2.1', '2.2', '2.3', '2.4', '2.5', '2.6', '3.1.1', '3.1.2', '3.2', '5.1', '5.2', '5.3', '6.1', '6.2', '6.3.1', '6.3.2' ]
 
 publisher_reverse = {}
 j = json.load(open('publishers.json'))
@@ -52,6 +55,19 @@ publisher_reverse['EU Enlargement and FPI'] = 'eu-ec'
 
 publishing_members = []
 
+def get_test(publisher_tests, test):
+    if test in publisher_tests:
+        return publisher_tests[test]['percentage']
+    elif test in extra_tests[slug]:
+        return extra_tests[slug][test]
+    else:
+        print('{0} missing for {1}'.format(test, name))
+
+summary = csv.writer(open('summary.csv', 'w'))
+header_tests = json.load(open('results/aai.json'))['tests']
+summary.writerow(['','Total number of activities']+[header_tests[x]['title']  if x in header_tests else '' for x in summary_tests])
+summary.writerow(['','']+summary_tests)
+
 for fname in os.listdir('in'):
     reader = csv.reader(open(os.path.join('in',fname)))
     try:
@@ -61,18 +77,16 @@ for fname in os.listdir('in'):
     if name in publisher_reverse:
         slug = publisher_reverse[name]
         publishing_members.append((slug,name))
-        publisher_tests = json.load(open('results/{0}.json'.format(slug)))['tests']
+        publisher_json = json.load(open('results/{0}.json'.format(slug)))
+        publisher_tests = publisher_json['tests']
         writer = csv.writer(open(os.path.join('out',name+'.csv'), 'w'))
         for i, row in enumerate(reader):
             if i in line_mapping:
                 test = line_mapping[i]
-                if test in publisher_tests:
-                    row[1] = publisher_tests[test]['percentage']
-                elif test in extra_tests[slug]:
-                    row[1] = extra_tests[slug][test]
-                else:
-                    print('{0} missing for {1}'.format(test, name))
+                row[1] = get_test(publisher_tests, test)
             writer.writerow(row)
+
+        summary.writerow([name,publisher_json['activityCount']]+list(map(partial(get_test, publisher_tests), summary_tests)))
     else:
         print('{0} does not match'.format(name))
         writer = csv.writer(open(os.path.join('out',name+'.csv'), 'w'))
