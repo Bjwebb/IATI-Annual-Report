@@ -1,14 +1,37 @@
 Instructions
 ============
 
+This is the process used to generate the raw data for the 2014 IATI Annual Report.
+
+Initial Setup
+^^^^^^^^^^^^^
+
+.. code-block:: bash
+
+    curl "http://iatiregistry.org/api/3/action/organization_list?all_fields=true" > publishers.json
+
+Publisher Progress
+^^^^^^^^^^^^^^^^^^
+
 * Run the data through https://github.com/Bjwebb/IATI-Preprocess/blob/master/bubble_hierachy.py
 * Get this branch: https://github.com/Bjwebb/IATI-Transparency_Indicator/tree/annual-report-2014
     - Run ``php transparency_tests.php``
     - Run ``./transparency_tests_additional.sh``
 * Symlink ``results`` and ``csv`` directories here
 * Use https://chrome.google.com/webstore/detail/cookietxt-export/lopabhfecdfhgogdbojmaicoicjekelh to export a ``cookies.txt`` for https://docs.google.com/spreadsheet/ccc?key=0Auyp-i6eEk7EdDFkYm1aRXFJV2c1dXVxTjBHTndfclE&usp=drive_web to this directory
-* Run ``./get.sh`` (this will populate the in directory with the spreadsheets from the above google doc)
-* Run ``python3 add_transparency_indicator.py``
+* Run ``./get.sh`` (this will populate the ``in`` directory with the spreadsheets from the above google doc)
+* Run ``python3 add_transparency_indicator.py`` - this generates a csv file for each publisher in the ``out`` directory
+
+Who's Publishing What?
+^^^^^^^^^^^^^^^^^^^^^^
+
+* Download https://github.com/IATI/IATI-Stats
+* Symlink ``stats.py`` in this directory as ``annualreport.py`` in the newly cloned directory.
+* Run ``python loop.py --stats-module annualreport``
+* Run ``python aggregate.py --stats-module annualreport``
+* Copy or symlink the ``aggregated`` folder to this dircetory
+* Run ``python3 whos_publishing.py`` - this generates ``whos_publishing.csv``
+
 
 License
 =======
