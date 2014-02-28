@@ -3,6 +3,8 @@ Instructions
 
 This is the process used to generate the raw data for the 2014 IATI Annual Report.
 
+Some of the CSVs that were generated can be found at https://github.com/Bjwebb/IATI-Annual-Report-Data
+
 Initial Setup
 ^^^^^^^^^^^^^
 
