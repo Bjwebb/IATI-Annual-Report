@@ -1,6 +1,12 @@
 import json, csv
 from stats import elements
 
+"""
+This code was created by Ben Webb, and is released under CC0
+http://creativecommons.org/publicdomain/zero/1.0/
+
+"""
+
 elements = sorted(elements)
 out = []
 out.append(['id','name']+elements)

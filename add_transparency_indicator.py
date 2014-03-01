@@ -3,6 +3,12 @@ from collections import defaultdict, OrderedDict
 from functools import partial
 import urllib.parse
 
+"""
+This code was created by Ben Webb, and is released under CC0
+http://creativecommons.org/publicdomain/zero/1.0/
+
+"""
+
 line_mapping = {
     11: '1.1',
     #13:

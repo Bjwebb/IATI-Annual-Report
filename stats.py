@@ -1,5 +1,11 @@
 from collections import defaultdict
 
+"""
+This code was created by Ben Webb, and is released under CC0
+http://creativecommons.org/publicdomain/zero/1.0/
+
+"""
+
 elements = [
     "reporting-org",
     "other-identifier",
