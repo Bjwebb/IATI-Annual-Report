@@ -11,7 +11,7 @@ http://creativecommons.org/publicdomain/zero/1.0/
 
 line_mapping = {
     11: '1.1',
-    #13:
+    13: '1.2',
     #15: '1.3',
     15: '1.4.1',
     17: '1.4.2',
@@ -37,33 +37,44 @@ j = json.load(open('publishers.json'))
 for publisher in j['result']:
     publisher_reverse[publisher['display_name']] = publisher['name']
 
+publisher_reverse['UK: FCO, Home Office, Work & Pensions, Energy & Climate Change, Health'] = 'uk'
+publisher_reverse['EU Enlargement and FPI'] = 'eu-ec'
+
 extra_tests = defaultdict(dict)
 
 reader = csv.reader(open('csv/Timeliness_Transactions_1.1.csv'))
 for row in reader:
     if len(row) > 20:
         extra_tests[row[0]]['1.1'] = row[20]
+
+reader = csv.reader(open('AR Frequency Calculations - Sheet1.csv'))
+for publisher in extra_tests:
+    extra_tests[publisher]['1.2'] = ''
+for row in reader:
+    if len(row) > 3 and row[0]:
+        extra_tests[publisher_reverse[row[0]]]['1.2'] = row[3]
+
 reader = csv.reader(open('csv/Activity_planning_3.csv'))
 for row in reader:
     if len(row) > 4:
         extra_tests[row[0]]['1.3'] = row[4]
+
 reader = csv.reader(open('csv/Alignement_with_financial_year_Transactions_4.1.csv'))
 for row in reader:
     if len(row) > 24:
         extra_tests[row[0]]['1.4.1'] = row[24].replace('Quaterly', 'Quarterly')
+
 reader = csv.reader(open('csv/Alignement_with_financial_year_Budgets_4.2.csv'))
 for row in reader:
     if len(row) > 11:
         extra_tests[row[0]]['1.4.2'] = row[11].title()
 
-publisher_reverse['UK: FCO, Home Office, Work & Pensions, Energy & Climate Change, Health'] = 'uk'
-publisher_reverse['EU Enlargement and FPI'] = 'eu-ec'
 
 publishing_members = []
 
 def get_test(publisher_tests, test):
     if test in publisher_tests:
-        return publisher_tests[test]['percentage']
+        return round(publisher_tests[test]['percentage'])
     elif test in extra_tests[slug]:
         return extra_tests[slug][test]
     else:
